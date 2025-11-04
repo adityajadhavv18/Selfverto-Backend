@@ -1,29 +1,16 @@
-import express, { Application, Request, Response } from "express";
-import cors from "cors";
+// src/server.ts
 import dotenv from "dotenv";
-import logger from "./utils/logger";
+import app from "./app";
+import { logger } from "./utils/logger";
 
 dotenv.config();
 
-const app: Application = express();
+const PORT = process.env.PORT || 2418;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-const PORT = process.env.PORT || 5000;
-
-// Default route
-app.get("/", (req: Request, res: Response) => {
-  logger.info("GET / route accessed");
-  res.send("✅ SelfVerto backend is running!");
-});
-
-app.get("/test", (req: Request, res: Response) => {
-  logger.info("GET /test route accessed");
-  res.json({ success: true, message: "Test route working!" });
+app.get("/", (req, res) => {
+  res.send("✅ SelfVerto is running!");
 });
 
 app.listen(PORT, () => {
-  logger.info(`🚀 Server running on port ${PORT}`);
+  logger.info(`✅ Server running on http://localhost:${PORT}`);
 });
