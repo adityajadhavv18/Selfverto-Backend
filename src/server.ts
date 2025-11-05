@@ -2,6 +2,7 @@
 import dotenv from "dotenv";
 import app from "./app";
 import { logger } from "./utils/logger";
+import { connectDB } from "./config/db";
 
 dotenv.config();
 
@@ -11,6 +12,8 @@ app.get("/", (req, res) => {
   res.send("✅ SelfVerto is running!");
 });
 
-app.listen(PORT, () => {
-  logger.info(`✅ Server running on http://localhost:${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    logger.info(`✅ Server running on http://localhost:${PORT}`);
+  });
 });

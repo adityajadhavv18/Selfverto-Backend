@@ -1,10 +1,25 @@
-// src/services/userService.ts
-import { logger } from "../utils/logger";
+import { User } from "../models/userModel";
+import bcrypt from "bcrypt";
 
-export const getAllUsers = async () => {
-  logger.info("Fetched all users");
-  return [
-    { id: 1, name: "Aditya" },
-    { id: 2, name: "John Doe" },
-  ];
+export const registerUser = async (
+  name: string,
+  email: string,
+  password: string
+) => {
+  const existing = await User.findOne({ email });
+  if (existing) throw new Error("User already exists");
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await User.create({ name, email, password: hashedPassword });
+  return user;
+};
+
+export const loginUser = async (email: string, password: string) => {
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("Invalid credentials");
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Invalid credentials");
+
+  return user;
 };
