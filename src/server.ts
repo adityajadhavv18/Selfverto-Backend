@@ -1,10 +1,8 @@
 // src/server.ts
-import dotenv from "dotenv";
+import "dotenv/config";
 import app from "./app";
 import { logger } from "./utils/logger";
 import { connectDB } from "./config/db";
-
-dotenv.config();
 
 const PORT = process.env.PORT || 2418;
 

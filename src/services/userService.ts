@@ -1,11 +1,9 @@
 import { User } from "../models/userModel";
 import bcrypt from "bcrypt";
+import { IUserSignupRequest, IUserLoginRequest } from "../types/user.types";
 
-export const registerUser = async (
-  name: string,
-  email: string,
-  password: string
-) => {
+export const registerUser = async (userData: IUserSignupRequest) => {
+  const { name, email, password } = userData;
   const existing = await User.findOne({ email });
   if (existing) throw new Error("User already exists");
 
@@ -14,7 +12,8 @@ export const registerUser = async (
   return user;
 };
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (credentials: IUserLoginRequest) => {
+  const { email, password } = credentials;
   const user = await User.findOne({ email });
   if (!user) throw new Error("Invalid credentials");
 

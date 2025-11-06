@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, InferSchemaType } from "mongoose";
 
 export interface IUser extends Document {
   name: string;
@@ -15,4 +15,5 @@ const userSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
+export type User = InferSchemaType<typeof userSchema>;
 export const User = mongoose.model<IUser>("User", userSchema);

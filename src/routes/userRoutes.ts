@@ -1,9 +1,10 @@
-// src/routes/userRoutes.ts
-// import express from "express";
-// import { getUsers } from "../controllers/userController";
+import express from "express";
+import { getMyProfile } from "../controllers/userController";
+import { authenticateUser } from "../middlewares/authMiddleware";
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.get("/", getUsers);
+// Protected route
+router.get("/me", authenticateUser, getMyProfile);
 
-// export default router;
+export default router;
