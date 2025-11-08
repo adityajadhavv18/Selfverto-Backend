@@ -1,12 +1,6 @@
 // src/types/user.types.ts
 
 // Data we store in MongoDB (user document)
-export interface IUser {
-  id?: any;
-  name: string;
-  email: string;
-  password: string;
-}
 
 // Data we return in API response
 export interface IUserResponse {
