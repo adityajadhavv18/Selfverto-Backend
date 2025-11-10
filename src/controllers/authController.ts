@@ -7,6 +7,7 @@ import {
   IUserLoginRequest,
   IUserSignupRequest,
 } from "../types/user.types";
+import { logger } from "../utils/logger";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -27,6 +28,7 @@ export const signup = async (
     };
 
     const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "1h" });
+    logger.info(`User registered: ${user.email}`);
 
     res.status(201).json({
       success: true,
@@ -35,6 +37,13 @@ export const signup = async (
       data: { id: user.id, name: user.name, email: user.email },
     });
   } catch (error) {
+    if (error instanceof Error) {
+      logger.error(`Signup failed for ${req.body.email}: ${error.message}`);
+    } else {
+      logger.error(
+        `Signup failed for ${req.body.email}: Unknown error occurred`
+      );
+    }
     next(error);
   }
 };
@@ -56,6 +65,7 @@ export const login = async (
     };
 
     const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "1h" });
+    logger.info(`User logged in: ${user.email}`);
 
     res.status(200).json({
       success: true,
@@ -64,6 +74,11 @@ export const login = async (
       data: { id: user.id, name: user.name, email: user.email },
     });
   } catch (error) {
+    if (error instanceof Error) {
+      logger.warn(`Login failed for ${req.body.email}: ${error.message}`);
+    } else {
+      logger.warn(`Login failed for ${req.body.email}: Unknown error occurred`);
+    }
     next(error);
   }
 };

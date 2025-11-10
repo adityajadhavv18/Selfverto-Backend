@@ -18,6 +18,7 @@ export const authenticateUser = async (
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      logger.warn("Missing Authorization header");
       return res
         .status(401)
         .json({ success: false, message: "No token provided" });
@@ -29,10 +30,12 @@ export const authenticateUser = async (
     // Find user in DB
     const user = await User.findById(decoded.id).select("-password");
     if (!user) {
+      logger.warn(`Invalid token used: ${token}`);
       return res.status(401).json({ success: false, message: "Invalid token" });
     }
 
     req.user = user; // ✅ typed via global.d.ts
+    logger.info(`Authenticated user: ${user.email}`);
     next();
   } catch (error: any) {
     logger.error(`JWT Auth Error: ${error.message}`);
