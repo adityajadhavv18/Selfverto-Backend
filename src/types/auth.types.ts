@@ -12,4 +12,5 @@ export interface IApiResponse<T> {
   message: string;
   data?: T;
   token?: string;
+  meta?: Record<string, any>;
 }

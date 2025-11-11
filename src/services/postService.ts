@@ -19,11 +19,21 @@ export const createPost = async (
 };
 
 /** Fetch all public posts (feed) */
-export const getPublicPosts = async () => {
+export const getPublicPosts = async (page = 1, limit = 10, author?: string) => {
   logger.info("Fetching all public posts for feed");
-  return Post.find({ isPublic: true })
+  const query: Record<string, any> = { isPublic: true };
+  if (author) query.author = author;
+
+  const skip = (page - 1) * limit;
+  const posts = await Post.find(query)
     .populate("author", "name email")
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const total = await Post.countDocuments(query);
+
+  return { posts, total, page, pages: Math.ceil(total / limit) };
 };
 
 /** Fetch all posts by specific user */

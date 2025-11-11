@@ -6,6 +6,7 @@ import {
   removePost,
 } from "../controllers/postController";
 import { authenticateUser } from "../middlewares/authMiddleware";
+import { upload } from "../config/upload";
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ const router = express.Router();
 router.get("/feed", getFeed);
 
 // Authenticated actions
-router.post("/", authenticateUser, addPost);
+router.post("/", authenticateUser, upload.single("image"), addPost);
 router.get("/mine", authenticateUser, getMyPosts);
 router.delete("/:id", authenticateUser, removePost);
 

@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import postRoutes from "./routes/postRoutes";
 import { errorHandler } from "./middlewares/errorMiddleware";
+import path from "path";
 
 const app = express();
 
@@ -16,6 +17,9 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+
+// Serve static files (e.g., images)
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Error handling
 app.use(errorHandler);
