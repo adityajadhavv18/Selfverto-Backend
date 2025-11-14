@@ -8,6 +8,7 @@ import {
   deletePost,
 } from "../services/postService";
 import { logger } from "../utils/logger";
+import { uploadFile } from "../utils/uploadHelper";
 
 export const addPost = async (
   req: Request<{}, {}, IPostCreateRequest>,
@@ -18,7 +19,11 @@ export const addPost = async (
     if (!req.user)
       return res.status(401).json({ success: false, message: "Unauthorized" });
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
+    let imageUrl;
+    if (req.file) {
+      const upload = await uploadFile(req.file.path, req.file.filename);
+      imageUrl = upload.url;
+    }
 
     const isPublic =
       typeof req.body.isPublic === "string"
@@ -31,7 +36,9 @@ export const addPost = async (
       isPublic,
     });
 
-    logger.info(`Post created by ${req.user.email} with image=${!!imageUrl}`);
+    logger.info(
+      `Post created by ${req.user.email} [mode=${process.env.UPLOAD_MODE}]`
+    );
 
     res.status(201).json({
       success: true,
