@@ -11,6 +11,7 @@ export interface IPost {
 export interface IPostCreateRequest {
   content: string;
   imageUrl?: string;
+  imageKey?: string;
   isPublic: boolean;
 }
 

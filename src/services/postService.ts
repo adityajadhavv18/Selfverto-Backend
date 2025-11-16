@@ -2,6 +2,8 @@ import { Post } from "../models/postModel";
 import { IPostCreateRequest } from "../types/post.types";
 import { IUserDocument } from "../models/userModel";
 import { logger } from "../utils/logger";
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { storageConfig } from "../config/storageConfig";
 
 /** Create new post */
 export const createPost = async (
@@ -12,6 +14,7 @@ export const createPost = async (
     author: author._id,
     content: data.content,
     imageUrl: data.imageUrl,
+    imageKey: data.imageKey,
     isPublic: data.isPublic,
   });
   logger.info(`New post created by ${author.email} (postId=${post._id})`);
@@ -43,6 +46,12 @@ export const getUserPosts = async (userId: string) => {
 };
 
 /** Delete a post (if owner) */
+
+const s3 = new S3Client({
+  region: storageConfig.aws.region,
+  credentials: storageConfig.aws.credentials,
+});
+
 export const deletePost = async (postId: string, userId: string) => {
   const post = await Post.findById(postId);
   if (!post) {
@@ -55,6 +64,16 @@ export const deletePost = async (postId: string, userId: string) => {
     );
     throw new Error("Unauthorized");
   }
+
+  if (post.imageKey && storageConfig.mode === "aws") {
+    await s3.send(
+      new DeleteObjectCommand({
+        Bucket: storageConfig.aws.bucket,
+        Key: post.imageKey,
+      })
+    );
+  }
+
   await post.deleteOne();
   logger.info(`Post deleted successfully (postId=${postId}, userId=${userId})`);
   return true;

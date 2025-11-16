@@ -4,6 +4,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import postRoutes from "./routes/postRoutes";
+import uploadRoutes from "./routes/uploadProfilePictureRoute";
 import { errorHandler } from "./middlewares/errorMiddleware";
 import path from "path";
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/upload", uploadRoutes);
 
 // Serve static files (e.g., images)
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));

@@ -20,9 +20,11 @@ export const addPost = async (
       return res.status(401).json({ success: false, message: "Unauthorized" });
 
     let imageUrl;
+    let imageKey;
     if (req.file) {
       const upload = await uploadFile(req.file.path, req.file.filename);
       imageUrl = upload.url;
+      imageKey = upload.key;
     }
 
     const isPublic =
@@ -33,6 +35,7 @@ export const addPost = async (
     const post = await createPost(req.user, {
       ...req.body,
       imageUrl,
+      imageKey,
       isPublic,
     });
 
