@@ -61,15 +61,15 @@ export const addPost = async (
 };
 
 export const getFeed = async (
-  _req: Request,
+  req: Request,
   res: Response<IApiResponse<IPostResponse[]>>,
   next: NextFunction
 ) => {
   try {
-    const page = parseInt((_req.query.page as string) || "1", 10);
-    const limit = parseInt((_req.query.limit as string) || "10", 10);
-    const author = (_req.query.author as string) || undefined;
-
+    const page = parseInt((req.query.page as string) || "1", 10);
+    const limit = parseInt((req.query.limit as string) || "6", 10);
+    const author = (req.query.author as string) || undefined;
+    console.log("BACKEND RECEIVED:", { page, limit });
     const { posts, total, pages } = await getPublicPosts(page, limit, author);
 
     res.status(200).json({
@@ -77,7 +77,11 @@ export const getFeed = async (
       message: "Public posts fetched successfully",
       data: posts.map((post) => ({
         id: post.id,
-        authorId: post.author.toString(),
+        authorId: (post.author as any)?._id?.toString(),
+        author: {
+          name: (post.author as any)?.name,
+          email: (post.author as any)?.email,
+        },
         content: post.content,
         imageUrl: post.imageUrl,
         isPublic: post.isPublic,
