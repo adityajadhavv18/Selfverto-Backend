@@ -7,6 +7,8 @@ export interface IUserResponse {
   id: string;
   name: string;
   email: string;
+  profilePictureUrl: string | null;
+  profilePictureKey: string | null;
 }
 
 // Signup request body

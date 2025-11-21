@@ -14,12 +14,12 @@ export const getMyProfile = async (
         .json({ success: false, message: "Not authorized" });
     }
 
-    const { id, name, email } = req.user;
+    const { id, name, email, profilePictureUrl, profilePictureKey } = req.user;
 
     res.status(200).json({
       success: true,
       message: "Fetched user profile",
-      data: { id, name, email },
+      data: { id, name, email, profilePictureUrl, profilePictureKey },
     });
   } catch (error) {
     next(error);
